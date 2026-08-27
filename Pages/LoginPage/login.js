@@ -105,4 +105,151 @@ document.addEventListener('DOMContentLoaded', () => {
         alertBox.classList.add('hidden');
         alertMessage.textContent = '';
     }
+
+    // Custom Recovery Prompt Component State Engine References
+    const forgotLink = document.querySelector('.forgot-link');
+    const createAccountLink = document.querySelector('.create-account-link');
+    const customPromptOverlay = document.getElementById('customPromptOverlay');
+    const closePromptBtn = document.getElementById('closePromptBtn');
+    
+    // Sub-modal inner controls selectors layout elements
+    const promptPhoneBtn = document.getElementById('promptPhoneBtn');
+    const mainPromptCard = customPromptOverlay.querySelector('.animate-card');
+    const phoneSubPromptCard = document.getElementById('phoneSubPromptCard');
+    const closeSubPromptBtn = document.getElementById('closeSubPromptBtn');
+    
+    const copyPhoneBtn = document.getElementById('copyPhoneBtn');
+    const copyBtnText = document.getElementById('copyBtnText');
+    
+    // Dynamic text element nodes selection
+    const promptModalTitle = document.getElementById('promptModalTitle');
+    const promptModalMessage = document.getElementById('promptModalMessage');
+    const phoneNumber = "09672037772";
+
+    // Trigger Layer A: Open Forgot Password View Context Setup
+    forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        if (promptModalTitle && promptModalMessage) {
+            promptModalTitle.textContent = "Account Recovery";
+            promptModalMessage.textContent = "Choose an option below to proceed with resetting your password credentials:";
+        }
+        
+        openMainModal();
+    });
+
+    // Trigger Layer B: Open Create Account View Context Setup
+    if (createAccountLink) {
+        createAccountLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            if (promptModalTitle && promptModalMessage) {
+                promptModalTitle.textContent = "Account Registration";
+                promptModalMessage.textContent = "Choose an option below to contact our management services for direct validation registration:";
+            }
+            
+            openMainModal();
+        });
+    }
+
+    // Switch View: Reveal the inner Phone Option Sub-Modal Layer Panel
+    promptPhoneBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mainPromptCard.classList.add('hidden');
+        phoneSubPromptCard.classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+    });
+
+    // Switch View Back: Return from Hotline Details back to Primary Options Row
+    closeSubPromptBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        phoneSubPromptCard.classList.add('hidden');
+        mainPromptCard.classList.remove('hidden');
+    });
+
+    // Clipboard Async Utility Mechanics Strategy Handler with iOS Fallback
+    copyPhoneBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        let success = false;
+
+        // Strategy 1: Modern Async Text API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            try {
+                await navigator.clipboard.writeText(phoneNumber);
+                success = true;
+            } catch (err) {
+                console.warn('Modern clipboard API failed, trying legacy fallback...', err);
+            }
+        }
+
+        // Strategy 2: Absolute Input Selection Fallback
+        if (!success) {
+            const textArea = document.createElement("textarea");
+            textArea.value = phoneNumber;
+            textArea.style.position = "fixed";
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.width = "2px";
+            textArea.style.height = "2px";
+            textArea.style.padding = "0";
+            textArea.style.border = "none";
+            textArea.style.outline = "none";
+            textArea.style.background = "transparent";
+            
+            // CRITICAL FIX: Enforcing a font size of 16px or higher 
+            // stops iOS Safari from zooming into the web page on .focus()
+            textArea.style.fontSize = "16px";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); 
+
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('All selector copying features failed:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // UI State Feedback Update Feedback indicators
+        if (success) {
+            copyBtnText.textContent = "Copied to Clipboard!";
+            copyPhoneBtn.style.borderColor = "var(--accent-cyan)";
+            
+            setTimeout(() => {
+                copyBtnText.textContent = "Copy to Clipboard";
+                copyPhoneBtn.style.borderColor = "rgba(255, 255, 255, 0.08)";
+                
+                // REMOVED closeSubPromptBtn.click(); 
+                // The prompt will now stay locked on this card state layout!
+            }, 1500);
+        } else {
+            copyBtnText.textContent = "Failed to copy. Use manual dial.";
+            copyPhoneBtn.style.borderColor = "var(--error-red)";
+        }
+    });
+
+    // Global Modal State Presentation Helper Routers
+    function openMainModal() {
+        mainPromptCard.classList.remove('hidden');
+        phoneSubPromptCard.classList.add('hidden');
+        customPromptOverlay.classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    closePromptBtn.addEventListener('click', closePromptModal);
+    
+    customPromptOverlay.addEventListener('click', (e) => {
+        if (e.target === customPromptOverlay) {
+            closePromptModal();
+        }
+    });
+
+    function closePromptModal() {
+        customPromptOverlay.classList.add('hidden');
+        phoneSubPromptCard.classList.add('hidden');
+        mainPromptCard.classList.remove('hidden');
+    }
 });
