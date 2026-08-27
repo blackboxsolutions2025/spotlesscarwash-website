@@ -1,4 +1,4 @@
-/* Premium Shared Navigation Header Bar */
+/* --- Updated Header Flex Alignments --- */
 .main-header {
     position: fixed;
     top: 0;
@@ -10,30 +10,175 @@
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Keeps logo optically centered */
     align-items: center;
     z-index: 1000;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    padding: 0 24px;
 }
 
-.main-header .logo {
-    font-size: 35px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    background: linear-gradient(135deg, #ffffff 20%, #00d2ff 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    display: inline-block; 
+/* --- Interactive Hamburger Styling Mechanics --- */
+.burger-trigger {
+    position: absolute; /* Decouples trigger from layout flow spacing */
+    left: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.burger-line {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-main, #f3f4f6);
+    border-radius: 2px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Morphing transform animations to close 'X' marker layout indicator */
+.burger-trigger.active .burger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.burger-trigger.active .burger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.burger-trigger.active .burger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* --- High-Fidelity Side Drawer Panel Menu Layout --- */
+.nav-drawer {
+    position: fixed;
+    top: 0;
+    left: -300px; /* Hidden off-canvas natively */
+    width: 300px;
+    height: 100vh;
+    background: rgba(14, 18, 27, 0.95);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    z-index: 1005;
+    padding: 100px 24px 40px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5);
+}
+
+.nav-drawer.open {
+    transform: translateX(300px); /* Slides drawer viewport open smoothly */
+}
+
+.drawer-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-cyan, #00d2ff);
+    letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 
+.drawer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+}
+
+.drawer-item {
+    display: block;
+    color: var(--text-muted, #9ca3af);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.drawer-item:hover, .drawer-item.active {
+    color: #ffffff;
+    background: rgba(0, 210, 255, 0.08);
+    padding-left: 20px; /* Premium Micro-Interaction slide */
+}
+
+.divider-line {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 16px 0;
+}
+
+.drawer-logout-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.drawer-logout-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* --- Blur Overlay Mask Window Backing --- */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 7, 10, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1004;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.drawer-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Prevent layout scrolling below while menu layer stays expanded */
+body.drawer-locked {
+    overflow: hidden;
+}
+
+/* --- Mobile Responsive Dimension Scaling --- */
 @media (max-width: 480px) {
     .main-header {
         height: 60px;
+        padding: 0 16px;
     }
-    .main-header .logo {
-        font-size: 25px;
+    .burger-trigger {
+        left: 16px;
+    }
+    .nav-drawer {
+        width: 260px;
+        left: -260px;
+        padding-top: 80px;
+    }
+    .nav-drawer.open {
+        transform: translateX(260px);
     }
 }

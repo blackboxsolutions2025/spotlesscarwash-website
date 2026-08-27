@@ -16,6 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(bookingData => {
+            // Check all empty data scenarios AND explicit noBooking flags from the server
+            const isEmptyArray = Array.isArray(bookingData) && bookingData.length === 0;
+            const isEmptyObject = bookingData && typeof bookingData === 'object' && Object.keys(bookingData).length === 0;
+            const hasNoBookingFlag = bookingData && bookingData.noBooking === true;
+
+            if (!bookingData || isEmptyArray || isEmptyObject || hasNoBookingFlag) {
+                // Manually trigger the "No Booking Found" view state instead of crashing
+                showErrorState("No Booking Found", "You do not have an active or pending reservation status under this profile layer.");
+                return; // Stops execution completely so it never reaches populateBookingDashboard
+            }
+
             // Fix applied here to handle row results arrays cleanly
             const activeRecord = Array.isArray(bookingData) ? bookingData[0] : bookingData;
             populateBookingDashboard(activeRecord);
@@ -28,12 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 showErrorState("System Failure", "Could not parse reservation payload data over database connection errors.");
             }
         });
-
-    // 3. Log out structural event listener
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.removeItem("userID");
-        window.location.href = "/";
-    });
 });
 
 /**
@@ -80,6 +85,9 @@ function formatDatabaseDate(dateString) {
  * Transforms database "14:00:00" string inputs to standard "2:00 PM"
  */
 function format24HourTime(timeString) {
+    // Defensive check: If timeString is null, undefined, or empty, return a placeholder
+    if (!timeString) return "--:-- --";
+
     const timeParts = timeString.split(':');
     if (timeParts.length < 2) return timeString;
     
@@ -122,7 +130,25 @@ function showErrorState(title, description) {
     document.getElementById("errorTitle").textContent = title;
     document.getElementById("errorDescription").textContent = description;
     
+    // Direct target selection using our new explicit ID element
+    const actionBtn = document.getElementById("errorActionBtn");
+    
+    if (actionBtn) {
+        if (title === "No Booking Found") {
+            actionBtn.textContent = "Make an Appointment";
+        } else {
+            actionBtn.textContent = "Schedule a Session";
+        }
+
+        // Set routing path straight to your calendar wizard
+        actionBtn.onclick = () => {
+            window.location.href = "/Pages/DateTimePickerPage/DateTimePickerPage.html";
+        };
+    }
+    
     document.getElementById("loadingState").classList.add("hidden");
     document.getElementById("bookingCard").classList.add("hidden");
     document.getElementById("errorState").classList.remove("hidden");
 }
+
+

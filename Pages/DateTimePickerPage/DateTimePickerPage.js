@@ -28,14 +28,19 @@ function checkActiveBooking() {
 
     fetch(`/api/bookings/my-booking?userID=${currentUserID}`)
         .then(response => {
-            if (!response.ok) return null;
+            if (!response.ok) throw new Error("Server occupancy payload failure");
             return response.json();
         })
         .then(bookingData => {
-            if (!bookingData) return;
+            // Clean exit if empty or if backend flags that no booking was found
+            if (!bookingData || bookingData.noBooking) {
+                console.log("Verified: No active booking found. User remains on booking selector page safely.");
+                return; 
+            }
+            
             const activeRecord = Array.isArray(bookingData) ? bookingData[0] : bookingData;
             
-            // Check if user has an active reservation
+            // Redirect only if a genuine reservation entry is verified active
             if (activeRecord && !activeRecord.noBooking) {
                 window.location.href = "/Pages/BookedPage/BookedPage.html";
             }

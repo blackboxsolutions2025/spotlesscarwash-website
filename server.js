@@ -239,8 +239,9 @@ app.get('/api/bookings/my-booking', (req, res) => {
             return res.status(500).json({ error: 'Database system processing failure' });
         }
 
+        // --- FIXED: Changed 404 Status to 200 OK with noBooking flag payload ---
         if (rows.length === 0) {
-            return res.status(404).json({ noBooking: true, message: 'No current reservations found for this customer account.' });
+            return res.status(200).json({ noBooking: true, message: 'No current reservations found for this customer account.' });
         }
 
         res.json(rows[0]);
