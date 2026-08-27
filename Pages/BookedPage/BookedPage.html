@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Carwash Reservation</title>
+    <link rel="stylesheet" href="/Pages/BookedPage/BookedPage.css">
+</head>
+<body>
+
+    <!-- Premium Background Atmosphere Layers -->
+    <div class="bg-container">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="light-streak streak-1"></div>
+        <div class="light-streak streak-2"></div>
+        <div class="water-drops"></div>
+    </div>
+
+    <!-- Sticky Brand Header Layer -->
+    <header class="sticky-header">
+        <div class="header-logo">SPOTLESS CARWASH</div>
+    </header>
+
+    <div class="login-wrapper">
+        
+        <!-- LOADING CONTAINER STATE -->
+        <div id="loadingState" class="login-card state-card">
+            <div class="spinner-container">
+                <div class="spinner"></div>
+            </div>
+            <p class="state-text">Loading your reservation records securely...</p>
+        </div>
+
+        <!-- ERROR / EMPTY CONTAINER STATE -->
+        <div id="errorState" class="login-card state-card hidden">
+            <div class="error-icon-container">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <h2 id="errorTitle">No Booking Found</h2>
+            <p id="errorDescription" class="state-text">We couldn't track down an active vehicle reservation layout under your profile information.</p>
+            <button class="btn-primary" onclick="window.location.href='/'">Return to Login</button>
+        </div>
+
+        <!-- MAIN RESERVATION CARD CONTAINER -->
+        <div id="bookingCard" class="login-card hidden">
+            
+            <header class="card-header">
+                <h1>MY RESERVATION</h1>
+                <p>Your current vehicle service tracking details</p>
+            </header>
+
+            <!-- Focused Main Appointment Block -->
+            <div class="appointment-highlight">
+                <div class="highlight-group">
+                    <span class="hl-label">RESERVATION DATE</span>
+                    <div id="bookingDate" class="hl-value">--- --, ----</div>
+                </div>
+                <div class="highlight-split-border"></div>
+                <div class="highlight-group">
+                    <span class="hl-label">RESERVATION TIME</span>
+                    <div id="bookingTime" class="hl-value">--:-- --</div>
+                </div>
+            </div>
+
+            <!-- Detailed Grid Information Segment -->
+            <div class="details-list">
+                
+                <div class="detail-item">
+                    <span class="item-label">BOOKING ID</span>
+                    <span id="bookingId" class="item-value font-mono">#------</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="item-label">RESERVED ON</span>
+                    <span id="createdAt" class="item-value">--- --, ---- --:-- --</span>
+                </div>
+
+                <div class="detail-divider"></div>
+
+                <div class="detail-item">
+                    <span class="item-label">CUSTOMER NAME</span>
+                    <span id="customerName" class="item-value">------ ------</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="item-label">PLATE NUMBER</span>
+                    <span id="plateNumber" class="item-value font-highlight">------</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="item-label">MOBILE NUMBER</span>
+                    <span id="mobileNumber" class="item-value">----------</span>
+                </div>
+
+            </div>
+
+            <!-- Footer Action Utilities -->
+            <div class="card-actions">
+                <button class="btn-secondary" id="logoutBtn">Log Out Securely</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/Pages/BookedPage/BookedPage.js"></script>
+</body>
+</html>

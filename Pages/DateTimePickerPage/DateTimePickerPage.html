@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotless Carwash - Booking</title>
+    <link rel="stylesheet" href="DateTimePickerPage.css">
+</head>
+<body>
+
+    <!-- Sticky Header Layer -->
+    <header class="main-header">
+        <div class="logo">SPOTLESS CARWASH</div>
+    </header>
+    
+    <div class="booking-container">
+        <!-- Date Canvas Grid Section -->
+        <h2>Available Day</h2>
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <!-- Keep this empty so JavaScript can dynamically display the real current month/year -->
+                <span id="month-year-display"></span>
+                <div class="calendar-nav">
+                    <span id="prev-month">&lt;</span>
+                    <span id="next-month">&gt;</span>
+                </div>
+            </div>
+            <div class="calendar-body">
+                <div class="weekdays">
+                    <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+                </div>
+                <div class="days-grid" id="days-container"></div>
+            </div>
+        </div>
+
+        <!-- Restriction Notice -->
+        <div id="booking-restriction-notice" class="restriction-notice hidden">
+            <p>Same-day appointments are not allowed.</p>
+            <p>Please make your reservation at least one day in advance to ensure that we can properly prepare for your visit and accommodate your preferred schedule.</p>
+        </div>
+
+        <!-- Time Section with exact data attributes -->
+        <div class="time-section">
+            <h2>Available Time</h2>
+            <div class="time-grid" id="time-container">
+                <div class="time-slot" data-time="08:00:00">8:00 AM</div>
+                <div class="time-slot" data-time="09:30:00">9:30 AM</div>
+                <div class="time-slot" data-time="11:00:00">11:00 AM</div>
+                <div class="time-slot" data-time="12:30:00">12:30 PM</div>
+                <div class="time-slot" data-time="14:00:00">2:00 PM</div>
+                <div class="time-slot" data-time="15:30:00">3:30 PM</div>
+                <div class="time-slot" data-time="17:00:00">5:00 PM</div>
+            </div>
+        </div>
+
+        <button class="book-btn" id="book-now-btn">Book Now</button>
+    </div>
+
+    <!-- Booking Confirmation Dialog Modal -->
+    <div id="agreement-modal" class="modal-backdrop hidden">
+        <div class="modal-window">
+            <h3>Booking Policy Agreement</h3>
+
+            <div class="modal-body-text">
+                <p>
+                    Customers are highly encouraged to arrive earlier than their booked time.
+                </p>
+
+                <p>
+                    <strong>Important:</strong> If you are late by 15 minutes or fail to arrive at all,
+                    you will be automatically charged a penalty fee of <strong>₱100</strong>.
+                    Failure to settle this penalty will result in your account being suspended
+                    from utilizing this site for future bookings.
+                </p>
+
+                <p>
+                    <strong>Booking Requirement:</strong> By making a booking, you automatically
+                    agree to avail of our <strong>Standard Wash Package</strong>.
+                    The <strong>Basic Wash Package is not available for bookings</strong>
+                    and cannot be selected when making a reservation.
+                </p>
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="agreement-checkbox">
+                <label for="agreement-checkbox">
+                    I read, understand, and agree to the booking policy details stated above.
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn secondary-btn" id="modal-cancel-btn">
+                    Cancel
+                </button>
+
+                <button class="modal-btn primary-btn" id="modal-confirm-btn" disabled>
+                    Book Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="DateTimePickerPage.js"></script>
+</body>
+
+</html>

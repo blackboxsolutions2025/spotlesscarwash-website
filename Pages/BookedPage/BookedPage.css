@@ -1,0 +1,241 @@
+/* Imports original foundational variables & resets from login.css to prevent duplicates */
+@import url('/Pages/LoginPage/login.css');
+
+/* Sticky Brand Header Style Architecture */
+.sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(10, 12, 16, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.header-logo {
+    font-size: 35px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff 20%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    display: inline-block; 
+    text-transform: uppercase;
+}
+
+/* 
+ * UPDATED: Centered Alignment Layout Wrapper
+ * Uses min-height and padding to allow normal scrolling behavior on short screens 
+ * instead of a rigid, broken fixed position layout.
+ */
+.login-wrapper {
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* ADJUST THIS GAP: Controls the space below the sticky header and card padding */
+    padding-top: calc(90px + env(safe-area-inset-top)); 
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.login-card {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Extension layout rules specific to components inside the BookedPage framework */
+.state-card {
+    text-align: center;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.spinner-container {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
+}
+
+.spinner-container .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 3.5px;
+}
+
+.state-text {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.error-icon-container {
+    color: var(--error-red);
+    width: 56px;
+    height: 56px;
+    margin-bottom: 8px;
+    opacity: 0.85;
+}
+
+#errorState h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Highlight Block Setup */
+.appointment-highlight {
+    background: linear-gradient(135deg, rgba(0, 114, 255, 0.08) 0%, rgba(0, 210, 255, 0.03) 100%);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* UPDATED: Center aligns the labels and layout values text elements completely */
+.highlight-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+}
+
+.hl-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+}
+
+.hl-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+}
+
+.highlight-split-border {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    width: 100%;
+}
+
+/* Detailed Information Grid Settings */
+.details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.item-label {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.item-value {
+    color: var(--text-main);
+    font-weight: 500;
+    text-align: right;
+}
+
+.font-mono {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.font-highlight {
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.detail-divider {
+    height: 1px;
+    background: var(--card-border);
+    margin: 4px 0;
+}
+
+/* Button & Action Rules */
+.card-actions {
+    margin-top: 8px;
+}
+
+.btn-secondary {
+    width: 100%;
+    height: 48px;
+    background: transparent;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-secondary:hover {
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Mobile Breakpoint Tweaks */
+@media (max-width: 480px) {
+    .sticky-header {
+        height: 60px;
+    }
+    .header-logo {
+        font-size: 25px;
+    }
+    /* UPDATED: Mobile safe scaling wrapper space padding adjustments */
+    .login-wrapper {
+        padding-top: calc(75px + env(safe-area-inset-top));
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .appointment-highlight {
+        padding: 16px;
+    }
+    .hl-value {
+        font-size: 18px;
+    }
+    .detail-item {
+        gap: 12px;
+    }
+}
