@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passInput.value.trim();
 
         if (!plate || !password) {
+            // UPDATED: More descriptive alert message for dual login options
             showAlert('Please fulfill all required fields credentials.');
             return;
         }

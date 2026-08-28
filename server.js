@@ -185,16 +185,18 @@ app.put('/api/profile', (req, res) => {
 });
 
 app.post('/api/login', (req, res) => {
+    // Destructure plateNumber (which now acts as the general identifier) and password
     const { plateNumber, password } = req.body;
 
-    // First query: Verify credentials and obtain UserID
+    // UPDATED QUERY: Check if the incoming identifier matches either PlateNumber OR Username
     const authQuery = `
         SELECT UserID, PlateNumber
         FROM WebCustomers
-        WHERE PlateNumber = ? AND Password = ?
+        WHERE (PlateNumber = ? OR Username = ?) AND Password = ?
     `;
 
-    db.query(authQuery, [plateNumber, password], (err, results) => {
+    // Pass the input value twice to fill both the PlateNumber and Username parameters
+    db.query(authQuery, [plateNumber, plateNumber, password], (err, results) => {
         if (err) {
             console.error("Login database error:", err);
             return res.status(500).json({
@@ -206,7 +208,7 @@ app.post('/api/login', (req, res) => {
         if (results.length > 0) {
             const userID = results[0].UserID;
 
-            // Second query: Fetch the status of the user's most recent booking slot
+            // Fetch the status of the user's most recent booking slot
             const bookingStatusQuery = `
                 SELECT Status 
                 FROM WebBookings 
@@ -242,12 +244,11 @@ app.post('/api/login', (req, res) => {
         } else {
             res.json({
                 success: false,
-                message: "Wrong Plate Number or Password!"
+                message: "Wrong Credentials or Password!"
             });
         }
     });
 });
-
 
 // GET Route: Pull confirmed conflicting reservations from the database table
 app.get('/api/bookings/busy-slots', (req, res) => {
