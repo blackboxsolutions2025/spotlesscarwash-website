@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Spotless Carwash</title>
+    <!-- Links directly to your existing shared premium header rules sheet -->
+    <link rel="stylesheet" href="../Shared/header.css">
+    <link rel="stylesheet" href="ProfilePage.css">
+    <link href="https://googleapis.com" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Premium Background Aura Planes Layer -->
+    <div class="bg-container">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="light-streak streak-1"></div>
+        <div class="light-streak streak-2"></div>
+        <div class="water-drops"></div>
+    </div>
+
+    <!-- Main Content Presentation Space Layout Wrapper -->
+    <main class="profile-wrapper">
+        <div class="profile-container">
+            
+            <div class="profile-header">
+                <h1>My Account Profile</h1>
+                <p>Manage your account configurations and review your details</p>
+            </div>
+
+            <!-- Validation and Response Notification Tray Layer -->
+            <div id="globalMessage" class="alert-container hidden">
+                <span id="globalMessageText"></span>
+            </div>
+
+            <form id="profileForm" novalidate onsubmit="return false;">            
+                <section class="profile-card">
+                    <div class="card-section-header">
+                        <h2>Personal Information</h2>
+                        <p>These core tracking metrics are locked to your car record and cannot be changed online.</p>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" class="input-readonly" readonly disabled value="Loading...">
+                        </div>
+                        <div class="form-group">
+                            <label for="middleName">Middle Name</label>
+                            <input type="text" id="middleName" class="input-readonly" readonly disabled value="Loading...">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" class="input-readonly" readonly disabled value="Loading...">
+                        </div>
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile Number</label>
+                            <input type="text" id="mobileNumber" class="input-readonly" readonly disabled value="Loading...">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="plateNumber">License Plate Number</label>
+                            <input type="text" id="plateNumber" class="input-readonly" readonly disabled value="Loading...">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Combined Account Credentials Card Structure (Inline Editing Toggles) -->
+                <section class="profile-card">
+                    <div class="card-section-header">
+                        <h2>Account Credentials</h2>
+                        <p>Click Edit next to an option to adjust your username profile variables or replace your password credential criteria parameters below.</p>
+                    </div>
+                    
+                    <div class="inline-credentials-stack" style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Unified Username Grid Block (Matches Password Layout Structure) -->
+                        <div id="usernameRowGroup" style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: flex-end;">
+                            <!-- Left Side Stack Containing the Input -->
+                            <div class="form-group" style="width: 100%;">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" readonly disabled class="input-readonly" style="padding: 0 16px; width: 100%; height: 48px;">
+                            </div>
+                            <!-- Right Side: Action Trigger Button aligned with the field baseline -->
+                            <div style="display: flex; align-items: center; height: 48px;">
+                                <button type="button" id="btnEditUsername" class="inline-action-trigger" style="position: static; margin-left: 12px; height: 36px; display: flex; align-items: center; justify-content: center;">Edit</button>
+                            </div>
+                        </div>
+                        <div id="usernameError" class="field-error-msg" style="margin-top: -16px;"></div>
+
+                        <!-- Unified Split Grid Container for Two-Row Password with Perfectly Aligned Right Button -->
+                        <div id="passwordRowGroup" style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: flex-end;">
+                            
+                            <!-- Left Side Stack Containing the Form Inputs -->
+                            <div id="passwordInputsStack" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+                                <!-- Row 1: Current Password Field (Always Visible) -->
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <div class="input-container">
+                                        <input type="password" id="currentPassword" class="input-readonly" readonly disabled placeholder="••••••••">
+                                        <button type="button" class="right-icon-btn toggle-password-btn" data-target="currentPassword" aria-label="Toggle password visibility">
+                                            <!-- Closed Eye Icon SVG Baseline -->
+                                            <svg class="eye-icon" xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: New Password Field (Forced Hidden via inline style on load) -->
+                                <div class="form-group" id="newPasswordRow" class="hidden" style="display: none;">
+                                    <label for="password">New Password</label>
+                                    <div class="input-container">
+                                        <input type="password" id="password" readonly disabled placeholder="••••••••">
+                                        <button type="button" class="right-icon-btn toggle-password-btn" data-target="password" aria-label="Toggle password visibility">
+                                            <!-- Closed Eye Icon SVG Baseline -->
+                                            <svg class="eye-icon" xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side: Action Trigger Container Dynamically Centering the Button Against the Stack -->
+                            <div id="passwordButtonContainer" style="display: flex; align-items: center; height: 48px; transition: var(--transition-smooth);">
+                                <button type="button" id="btnEditPassword" class="inline-action-trigger" style="position: static; margin-left: 12px; height: 36px; display: flex; align-items: center; justify-content: center;">Edit</button>
+                            </div>
+                        </div>
+                        <div id="passwordError" class="field-error-msg" style="margin-top: -16px;"></div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </main>
+
+    <!-- Shared injection layer runs first to draw DOM elements safely -->
+    <script src="../Shared/header.js"></script>
+    <script src="ProfilePage.js"></script>
+</body>
+</html>

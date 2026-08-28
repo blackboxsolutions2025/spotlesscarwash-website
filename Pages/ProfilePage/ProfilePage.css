@@ -1,0 +1,398 @@
+/* Premium Atmospheric Token Sync mapping your exact login styling metrics */
+:root {
+    --bg-dark: #0a0c10;
+    --card-bg: rgba(18, 22, 31, 0.65);
+    --card-border: rgba(255, 255, 255, 0.06);
+    --accent-blue: #0072ff;
+    --accent-cyan: #00d2ff;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --input-bg: rgba(10, 12, 16, 0.7);
+    --input-border: rgba(255, 255, 255, 0.08);
+    --input-focus: rgba(0, 210, 255, 0.3);
+    --readonly-bg: rgba(15, 20, 30, 0.45);
+    --error-red: #ef4444;
+    --error-bg: rgba(239, 68, 68, 0.1);
+    --success-green: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-top: 110px; /* Consistent structural buffer for shared header */
+}
+
+/* Background Atmosphere Layers imported directly from login framework configuration */
+.bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #111622 0%, #0a0c10 100%);
+}
+
+.glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.orb-1 { top: -10%; right: -10%; width: 50vw; height: 50vw; background: var(--accent-blue); }
+.orb-2 { bottom: -15%; left: -10%; width: 60vw; height: 60vw; background: var(--accent-cyan); }
+
+.light-streak {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.05), transparent);
+    transform: rotate(-25deg);
+    pointer-events: none;
+}
+.streak-1 { top: 20%; left: -20%; width: 150%; height: 80px; }
+.streak-2 { bottom: 15%; right: -20%; width: 140%; height: 40px; }
+
+.water-drops {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0.025;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='10' cy='20' r='1.5' fill='%23fff'/%3E%3Ccircle cx='45' cy='15' r='1' fill='%23fff'/%3E%3Ccircle cx='65' cy='55' r='2' fill='%23fff'/%3E%3Ccircle cx='25' cy='60' r='1.2' fill='%23fff'/%3E%3C/svg%3E");
+}
+
+/* Layout Framework Elements */
+.profile-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    margin-bottom: 32px;
+}
+
+.profile-header h1 {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.profile-header p {
+    font-size: 15px;
+    color: var(--text-muted);
+}
+
+/* Glassmorphic Container Sheets configuration */
+.profile-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.card-section-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 16px;
+}
+
+.card-section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.card-section-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Inline Credentials Group Stack Layout without divider panels */
+.inline-credentials-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Structural Inputs Grids Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Position alignment anchors for password fields inputs */
+.form-group .input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.form-group .input-container input {
+    padding-right: 135px !important; /* Grants ample line space clearance for dual action switches */
+}
+
+/* 2. Anchor the eye buttons relative to the input container frame */
+.form-group .right-icon-btn {
+    position: absolute;
+    right: 12px; 
+    top: 50%;
+    transform: translateY(-50%); /* Centers the eye icon cleanly on the vertical axis */
+    
+    /* CHANGE THIS: Changed from height: 100% to match your input height precisely */
+    height: 48px;                
+    width: 36px;
+    
+    background: transparent !important;
+    border: none !important;
+    color: #556075;
+    cursor: pointer;
+    display: none !important; 
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    transition: var(--transition-smooth);
+}
+
+.form-group .right-icon-btn.is-editing {
+    display: flex !important;
+}
+
+.form-group .right-icon-btn:hover {
+    color: var(--text-main);
+}
+
+.form-group .right-icon-btn svg {
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* 4. Fix your primary inline action trigger position to prevent overlaps */
+.form-group .input-container .inline-action-trigger {
+    position: absolute;
+    right: 12px; /* Fixed anchor right against the outer border wall edge */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 11; /* Places the primary interaction trigger layer on top */
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+/* Context Component Action Alignment Wrapper */
+.input-action-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.form-group input {
+    width: 100%;
+    height: 48px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    padding: 0 16px; /* Keep this simple (16px) for normal locked fields */
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+.form-group .input-container input {
+    padding-right: 135px !important; 
+}
+
+/* Interactive Interactive Element Focused States */
+.form-group input:focus:not(.input-readonly) {
+    border-color: rgba(0, 210, 255, 0.5);
+    background-color: rgba(14, 18, 27, 0.9);
+    box-shadow: 0 0 0 4px var(--input-focus);
+}
+
+/* Explicit styling marking metadata details as strictly un-editable */
+.input-readonly {
+    /* Boost text color contrast from 0.4 up to 0.85 for crisp readability */
+    color: rgba(243, 244, 246, 0.85) !important;
+    
+    /* Slightly brighten the interior background fill to lift text depth */
+    background-color: rgba(20, 26, 38, 0.8) !important;
+    
+    /* Soften the dashed border line to keep the interface looking clean */
+    border: 1px dashed rgba(255, 255, 255, 0.08) !important;
+    
+    cursor: not-allowed;
+    user-select: none;
+}
+
+/* Custom Inline Trigger Element styling rules */
+.inline-action-trigger {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-main);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    user-select: none;
+    z-index: 5;
+}
+
+.inline-action-trigger:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Save State transformation styling highlights */
+.inline-action-trigger.active-save-state {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 114, 255, 0.3);
+}
+
+.inline-action-trigger.active-save-state:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0, 210, 255, 0.4);
+}
+
+.inline-action-trigger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Validation System Indicators Styles */
+.field-error-msg {
+    color: var(--error-red);
+    font-size: 12.5px;
+    margin-top: 6px;
+    min-height: 16px;
+    font-weight: 400;
+}
+
+/* Clean Alert Notification Containers mapping custom variables layout */
+.alert-container {
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    animation: alertReveal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.alert-container.hidden {
+    display: none !important;
+}
+
+@keyframes alertReveal {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.alert-container.error {
+    background-color: var(--error-bg);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+.alert-container.success {
+    background-color: var(--success-bg);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #a7f3d0;
+}
+
+/* Mobile Screen Breakpoint Balancing updates */
+@media (max-width: 600px) {
+    body {
+        padding-top: 100px;
+    }
+    .profile-wrapper {
+        padding: 16px;
+    }
+    .profile-card {
+        padding: 24px 20px;
+        border-radius: var(--radius-md);
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .profile-header h1 {
+        font-size: 28px;
+    }
+    .form-group .right-icon-btn {
+        right: 80px; /* Snaps closer to the edge on tight layouts */
+    }
+    .form-group .input-container input {
+        padding-right: 125px !important; 
+    }
+    .form-group input {
+        font-size: 16px !important;
+    }
+}

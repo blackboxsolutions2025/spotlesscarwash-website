@@ -24,13 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
     header.appendChild(logo);
 
     // Build high-fidelity drawer layout panel element trees safely
+    // ADDED: User Profile list item link matching your exact required path parameters
     const navDrawer = document.createElement("nav");
     navDrawer.className = "nav-drawer";
     navDrawer.innerHTML = `
         <div class="drawer-header">Menu Navigation</div>
         <ul class="drawer-links">
-            <li><a href="/Pages/BookedPage/BookedPage.html" class="drawer-item">My Reservation</a></li>
-            <li><a href="/Pages/DateTimePickerPage/DateTimePickerPage.html" class="drawer-item">Book Appointment</a></li>
+            <li><a href="/Pages/BookedPage/BookedPage.html" class="drawer-item" id="navLinkBooked">My Reservation</a></li>
+            <li><a href="/Pages/DateTimePickerPage/DateTimePickerPage.html" class="drawer-item" id="navLinkSchedule">Book Appointment</a></li>
+            <li><a href="/Pages/ProfilePage/ProfilePage.html" class="drawer-item" id="navLinkProfile">User Profile</a></li>
             <li class="divider-line"></li>
             <li><button id="drawerLogoutBtn" class="drawer-logout-btn">Log Out Securely</button></li>
         </ul>
@@ -44,6 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Secure insertion boundary rule directly onto top-level body content frame
     document.body.insertBefore(header, document.body.firstChild);
+
+    // Dynamic active route tab layout tracker matching current windows locations path
+    const currentPath = window.location.pathname;
+    if (currentPath.includes("BookedPage")) {
+        document.getElementById("navLinkBooked")?.classList.add("active");
+    } else if (currentPath.includes("DateTimePickerPage")) {
+        document.getElementById("navLinkSchedule")?.classList.add("active");
+    } else if (currentPath.includes("ProfilePage")) {
+        document.getElementById("navLinkProfile")?.classList.add("active");
+    }
 
     // Toggle menu state handler callbacks
     const toggleMenu = () => {

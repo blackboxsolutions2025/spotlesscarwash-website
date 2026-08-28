@@ -58,7 +58,132 @@ db.connect((err) => {
 });
 
 
-// 6. Login API Route - Extracts matching user and checks their latest booking status
+// ==========================================
+// PROFILE API ROUTES
+// ==========================================
+
+app.get('/api/profile', (req, res) => {
+    const { userID } = req.query;
+
+    if (!userID) {
+        return res.status(401).json({ error: 'User authorization credentials invalid or expired.' });
+    }
+
+    const profileQuery = `
+        SELECT FirstName, MiddleName, LastName, MobileNumber, Username, PlateNumber, CreatedAt, UpdatedAt
+        FROM WebCustomers 
+        WHERE UserID = ? 
+        LIMIT 1
+    `;
+
+    db.query(profileQuery, [userID], (err, results) => {
+        if (err) {
+            console.error("Fetch profile database error:", err);
+            return res.status(500).json({ error: 'Database system processing failure' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User profile context not found.' });
+        }
+
+        res.json(results[0]);
+    });
+});
+
+app.put('/api/profile', (req, res) => {
+    // Destructures incoming update keys mapped via frontend including currentPassword authentication validations
+    const { userID, username, currentPassword, newPassword } = req.body;
+
+    if (!userID) {
+        return res.status(401).json({ message: 'User authorization credentials invalid or expired.' });
+    }
+
+    if (username !== undefined && username.trim() === '') {
+        return res.status(400).json({ field: 'username', message: 'Username field cannot be left blank.' });
+    }
+
+    const fetchUserSql = 'SELECT Password, Username FROM WebCustomers WHERE UserID = ? LIMIT 1';
+    
+    db.query(fetchUserSql, [userID], (err, users) => {
+        if (err) {
+            console.error("Database user fetch error during update:", err);
+            return res.status(500).json({ message: 'Database transactional runtime error prevented execution.' });
+        }
+
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'User account mapping missing.' });
+        }
+
+        const currentUserRecord = users[0];
+        let updates = [];
+        let queryParams = [];
+
+        // Evaluates Username modification tracks safely 
+        const processUsernameUpdate = () => {
+            if (username && username.trim() !== currentUserRecord.Username) {
+                const cleanedUsername = username.trim();
+                const checkCollisionSql = 'SELECT UserID FROM WebCustomers WHERE Username = ? AND UserID != ? LIMIT 1';
+                
+                db.query(checkCollisionSql, [cleanedUsername, userID], (collisionErr, collisions) => {
+                    if (collisionErr) {
+                        console.error("Username conflict validation check failure:", collisionErr);
+                        return res.status(500).json({ message: 'Database validation fault.' });
+                    }
+
+                    if (collisions.length > 0) {
+                        return res.status(400).json({ field: 'username', message: 'This username is already taken.' });
+                    }
+
+                    updates.push('Username = ?');
+                    queryParams.push(cleanedUsername);
+                    processPasswordUpdate();
+                });
+            } else {
+                processPasswordUpdate();
+            }
+        };
+
+        // Directly processes password changes checking currentPassword matching parameters securely
+        const processPasswordUpdate = () => {
+            if (newPassword) {
+                if (!currentPassword) {
+                    return res.status(400).json({ field: 'password', message: 'Verification password must be supplied.' });
+                }
+                
+                // Primary validation block ensuring parameters align with database matches
+                if (currentPassword !== currentUserRecord.Password) {
+                    return res.status(400).json({ field: 'password', message: 'The current password entered is incorrect.' });
+                }
+
+                updates.push('Password = ?');
+                queryParams.push(newPassword);
+            }
+
+            executeDatabaseUpdate();
+        };
+
+        const executeDatabaseUpdate = () => {
+            if (updates.length === 0) {
+                return res.status(400).json({ message: 'No configuration parameters were altered.' });
+            }
+
+            queryParams.push(userID);
+            const updateSql = `UPDATE WebCustomers SET ${updates.join(', ')} WHERE UserID = ?`;
+
+            db.query(updateSql, queryParams, (updateErr, result) => {
+                if (updateErr) {
+                    console.error("Profile modification update system execution crash:", updateErr);
+                    return res.status(500).json({ message: 'Internal system database write action fault.' });
+                }
+                res.json({ success: true, message: 'Account configuration metrics successfully updated.' });
+            });
+        };
+
+        // Initialize modification lookup loops execution chain
+        processUsernameUpdate();
+    });
+});
+
 app.post('/api/login', (req, res) => {
     const { plateNumber, password } = req.body;
 
@@ -248,10 +373,8 @@ app.get('/api/bookings/my-booking', (req, res) => {
     });
 });
 
-
-
 // 7. Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-}); 
+});
