@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotless Carwash - Admin Dashboard</title>
+    <link rel="stylesheet" href="/Pages/Shared/header.css">
+    <script src="/Pages/Shared/header.js" defer></script>
+
+    <!-- Primary Page Style Architecture Layout Layer -->
+    <link rel="stylesheet" href="AdminPage.css">
+</head>
+<body>
+
+    <!-- SECTION 1: AUTHENTICATION LOCK INTERFACE -->
+    <div id="loginOverlay" class="auth-wrapper">
+        <div class="auth-card">
+            <h2>Admin Portal Access</h2>
+            <p class="subtitle">Please provide your authorized credentials</p>
+            <div id="loginError" class="alert-message hide"></div>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary">Authenticate Identity</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SECTION 2: MANAGEMENT DASHBOARD CONTENT -->
+    <div id="dashboardContainer" class="dashboard-root hide">
+        <main class="content-wrapper">
+            <div class="table-header-row">
+                <h1>Reservation Management</h1>
+                <button id="refreshBtn" class="btn-secondary">🔄 Sync Table Data</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Reservation</th>
+                            <th>Customer Profile</th>
+                            <th>Plate Number</th>
+                            <th>Mobile Contact</th>
+                            <th>Date Booked</th>
+                            <th>Current Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <!-- Dynamic content filled by AdminPage.js -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- SECTION 3: REUSABLE WORKFLOW CONFIRMATION DIALOG -->
+    <div id="confirmModal" class="modal-overlay hide">
+        <div class="modal-card">
+            <h3 id="modalTitle">Confirm Action</h3>
+            <p id="modalDescription">Are you sure you want to alter this registration state?</p>
+            <div class="modal-actions">
+                <button id="modalCancelBtn" class="btn-modal-cancel">Dismiss</button>
+                <button id="modalConfirmBtn" class="btn-modal-proceed">Confirm Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Shared/header.js"></script>
+    <script src="AdminPage.js" defer></script>
+</body>
+</html>

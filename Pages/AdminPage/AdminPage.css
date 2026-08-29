@@ -1,0 +1,532 @@
+/* ==========================================================================
+   GLOBAL RESET & HIGH-TECH LUXURY THEME VARIABLES
+   ========================================================================== */
+:root {
+    --bg-dark: #0a0c10;
+    --card-bg: rgba(18, 22, 31, 0.65);
+    --card-border: rgba(255, 255, 255, 0.06);
+    --accent-blue: #0072ff;
+    --accent-cyan: #00d2ff;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --input-bg: rgba(10, 12, 16, 0.7);
+    --input-border: rgba(255, 255, 255, 0.08);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --surface: rgba(18, 22, 31, 0.5);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Dynamic Glowing Badge Status Colors */
+    --status-pending: #ffc107;
+    --status-confirmed: #00d2ff;
+    --status-completed: #10b981;
+    --status-cancelled: #ef4444;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at 50% 50%, #111622 0%, #0a0c10 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+.hide { display: none !important; }
+
+/* ==========================================================================
+   AUTHENTICATION OVERLAY VIEW (Glassmorphic Admin Login)
+   ========================================================================== */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px;
+    background: transparent;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 3rem 2.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(0, 114, 255, 0.03);
+    width: 100%;
+    max-width: 420px;
+    animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card h2 { 
+    margin-top: 0; 
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center; 
+    color: var(--text-main); 
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.subtitle { 
+    text-align: center; 
+    color: var(--text-muted); 
+    margin-bottom: 2.5rem; 
+    font-size: 0.9rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.form-group input {
+    width: 100%;
+    height: 52px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    padding: 0 1rem;
+    color: var(--text-main);
+    box-sizing: border-box;
+    font-size: 15px;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+.form-group input:focus {
+    border-color: rgba(0, 210, 255, 0.5);
+    background-color: rgba(14, 18, 27, 0.9);
+    box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.15);
+}
+
+.alert-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    padding: 0.85rem 1.2rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   MAIN DASHBOARD NAV BAR
+   ========================================================================== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--text-main);
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.brand { 
+    font-size: 1.4rem; 
+    font-weight: 700; 
+    letter-spacing: 0.5px;
+}
+
+.logo-accent { 
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    -webkit-text-fill-color: transparent;
+}
+
+.session-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 1.25rem; 
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   CONTENT LAYOUT & MODERN SCROLLBARS
+   ========================================================================== */
+.content-wrapper { 
+    padding: 2.5rem 2rem; 
+    max-width: 1600px;
+    margin: 0 auto;
+    /* ADDED: Pushes the main workspace down 70px so it sits beautifully below the fixed header layout */
+    margin-top: 70px; 
+}
+
+.table-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.table-header-row h1 { 
+    margin: 0; 
+    font-size: 2rem; 
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   PREMIUM GLASSMORPHIC TABLES
+   ========================================================================== */
+.table-responsive {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+    
+    /* ADD THIS LINE FOR HORIZONTAL SCROLLING ON PHONE */
+    overflow-x: auto; 
+    
+    /* UPDATED: Change overflow: hidden to overflow-y: hidden so it doesn't block the x axis scroll */
+    overflow-y: hidden; 
+    
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* OPTIONAL: Keeps the mobile table scrolling smooth without displaying chunky default scrollbars */
+.table-responsive::-webkit-scrollbar {
+    height: 4px; /* Thin, elegant scroll indicator bar */
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 210, 255, 0.2); /* Subtle glow track match */
+    border-radius: 10px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+}
+
+.styled-table th {
+    background-color: rgba(255, 255, 255, 0.02);
+    color: var(--text-muted);
+    padding: 1.2rem 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center; 
+    white-space: nowrap; /* Prevents column header text tracking compression */
+}
+
+/* Update your td properties */
+.styled-table td {
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    color: #e5e7eb;
+    text-align: center; 
+    white-space: nowrap; /* Disallows unwanted line breaks within dates/times text data */
+}
+
+.styled-table tbody tr {
+    transition: var(--transition-smooth);
+}
+
+.styled-table tbody tr:hover { 
+    background-color: rgba(255, 255, 255, 0.02); 
+}
+
+.styled-table td strong {
+    color: var(--accent-cyan);
+}
+
+.styled-table td code {
+    background: rgba(0, 210, 255, 0.06);
+    color: var(--accent-cyan);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.styled-table td:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.styled-table td[id^="actions-cell-"] {
+    vertical-align: middle;
+    box-sizing: border-box;
+    border-right: none !important; /* Prevents visual line clutter on final column */
+}
+
+/* ADDED: Handles stacked layout rules inside the cell wrapper safely */
+.actions-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+/* ==========================================================================
+   GLOWING HUD STATUS BADGES
+   ========================================================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-pending { 
+    background-color: rgba(255, 193, 7, 0.1); 
+    color: var(--status-pending); 
+    border: 1px solid rgba(255, 193, 7, 0.25);
+}
+
+.badge-confirmed { 
+    background-color: rgba(0, 210, 255, 0.1); 
+    color: var(--status-confirmed);
+    border: 1px solid rgba(0, 210, 255, 0.25);
+}
+
+.badge-completed { 
+    background-color: rgba(16, 185, 129, 0.1); 
+    color: var(--status-completed);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-cancelled { 
+    background-color: rgba(239, 68, 68, 0.1); 
+    color: var(--status-cancelled);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* ==========================================================================
+   INTERACTIVE ACTION UTILITIES & BUTTONS
+   ========================================================================== */
+.btn-primary, .btn-secondary, .btn-logout, .action-btn {
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+/* Sync Data Button */
+.btn-secondary { 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid var(--input-border);
+    color: var(--text-main); 
+    padding: 0.65rem 1.25rem;
+    font-size: 0.85rem;
+}
+
+.btn-secondary:hover { 
+    background: rgba(255, 255, 255, 0.1); 
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Auth Login Submit Button */
+.btn-primary { 
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%); 
+    color: #fff; 
+    width: 100%; 
+    font-size: 15px; 
+    padding: 0.85rem; 
+    box-shadow: 0 4px 20px rgba(0, 114, 255, 0.25);
+}
+
+.btn-primary:hover { 
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(0, 210, 255, 0.3);
+    filter: brightness(1.05);
+}
+
+/* Logout Button */
+.btn-logout { 
+    background: rgba(239, 68, 68, 0.1); 
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5; 
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+.btn-logout:hover { 
+    background: var(--status-cancelled); 
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* In-Table Operations Grid Inline Buttons */
+.action-btn { 
+    padding: 0.45rem 1rem; 
+    margin: 0; 
+    font-size: 0.8rem; 
+    color: white; 
+    width: 90px; /* Forces uniform size across multiple stacked workflow button targets */
+    text-align: center;
+}
+
+.btn-confirm { 
+    background-color: rgba(16, 185, 129, 0.15); 
+    color: var(--status-completed);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.btn-confirm:hover { 
+    background-color: var(--status-completed); 
+    color: #fff;
+}
+
+.btn-complete { 
+    background-color: rgba(0, 114, 255, 0.15); 
+    color: #38bdf8;
+    border: 1px solid rgba(0, 114, 255, 0.3);
+}
+
+.btn-complete:hover { 
+    background-color: var(--accent-blue); 
+    color: #fff;
+}
+
+.btn-cancel { 
+    background-color: rgba(239, 68, 68, 0.15); 
+    color: var(--status-cancelled);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-cancel:hover { 
+    background-color: var(--status-cancelled); 
+    color: #fff;
+}
+
+.text-muted-actions { 
+    color: var(--text-muted); 
+    font-style: normal; 
+    font-size: 0.85rem;
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+                GLASSMOPHIC MODAL CONFIRMATION WORKFLOWS
+========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(5, 6, 8, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-card {
+    background: rgba(18, 22, 31, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2.2rem;
+    border-radius: var(--radius-lg);
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    transform: scale(0.98);
+    animation: modalEntrance 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalEntrance {
+    to { transform: scale(1); }
+}
+
+.modal-card h3 {
+    margin-top: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.modal-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.btn-modal-cancel {
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.btn-modal-cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-modal-proceed {
+    border: none;
+    background: var(--accent-blue);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+}
+
+.btn-modal-proceed:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+}
+
+/* Restores the navigation structural bounds cleanly for admin views */
+.nav-drawer {
+    left: -350px !important; /* Extra padding clearance ensuring it is fully hidden natively */
+}
+
+.nav-drawer.open {
+    transform: translateX(350px) !important; /* Forces it to slide fully out into view */
+}
+
+@media (max-width: 480px) {
+    .content-wrapper {
+        /* ADDED: Adjusted compact margin cushioning offset matching smartphone header sizes */
+        margin-top: 60px; 
+    }
+}

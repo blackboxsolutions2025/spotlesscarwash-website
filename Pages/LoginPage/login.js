@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passInput.value.trim();
 
         if (!plate || !password) {
-            // UPDATED: More descriptive alert message for dual login options
             showAlert('Please fulfill all required fields credentials.');
             return;
         }
@@ -40,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setLoadingState(true);
 
         try {
-            // Unchanged API Compatibility Protocol with required data key schemas
+            // Dual-purpose unified API call routing protocol
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -59,19 +58,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.success) {
-                // SAVES THE USER ID TO STORAGE SO THE DATETIMEPICKERPAGE CAN USE IT
-                localStorage.setItem('userID', data.userID);
-                
                 // Clear state UI smoothly right before redirect page transition execution
                 setLoadingState(false);
 
-                // Conditional Routing based on the most recent Booking status state
-                if (data.latestBookingStatus === 'Confirmed') {
-                    // Direct absolute desktop file path routing requested
-                    window.location.href = "/Pages/BookedPage/BookedPage.html";
+                // ==========================================================
+                // CRITICAL: SANITIZE ALL EXISTING CLIENT STORAGE PROFILE KEYS
+                // ==========================================================
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
+                localStorage.removeItem('customerToken');
+                localStorage.removeItem('userID');
+                sessionStorage.clear(); // Optional: clears temporary session markers cleanly
+
+                // ROUTING CONDITIONAL BRANCH: Check if user is an administrator first
+                if (data.isAdmin) {
+                    // Populate authentication parameters needed by the AdminPage interface
+                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('adminUser', data.username);
+                    
+                    // Route directly to your Admin Dashboard workspace configuration
+                    window.location.href = "/Pages/AdminPage/AdminPage.html";
                 } else {
-                    // Fallback router path configuration
-                    window.location.href = "/Pages/DateTimePickerPage/DateTimePickerPage.html";
+                    // Standard Customer routing workflow chain sequence secured via JWT
+                    localStorage.setItem('customerToken', data.token);
+                    localStorage.setItem('userID', data.userID);
+
+                    if (data.latestBookingStatus === 'Confirmed') {
+                        window.location.href = "/Pages/BookedPage/BookedPage.html";
+                    } else {
+                        window.location.href = "/Pages/DateTimePickerPage/DateTimePickerPage.html";
+                    }
                 }
             } else {
                 setLoadingState(false);
@@ -173,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         let success = false;
 
-        // Strategy 1: Modern Async Text API
         if (navigator.clipboard && navigator.clipboard.writeText) {
             try {
                 await navigator.clipboard.writeText(phoneNumber);
@@ -183,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Strategy 2: Absolute Input Selection Fallback
         if (!success) {
             const textArea = document.createElement("textarea");
             textArea.value = phoneNumber;
@@ -196,9 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
             textArea.style.border = "none";
             textArea.style.outline = "none";
             textArea.style.background = "transparent";
-            
-            // CRITICAL FIX: Enforcing a font size of 16px or higher 
-            // stops iOS Safari from zooming into the web page on .focus()
             textArea.style.fontSize = "16px";
             
             document.body.appendChild(textArea);
@@ -214,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(textArea);
         }
 
-        // UI State Feedback Update Feedback indicators
         if (success) {
             copyBtnText.textContent = "Copied to Clipboard!";
             copyPhoneBtn.style.borderColor = "var(--accent-cyan)";
@@ -222,9 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 copyBtnText.textContent = "Copy to Clipboard";
                 copyPhoneBtn.style.borderColor = "rgba(255, 255, 255, 0.08)";
-                
-                // REMOVED closeSubPromptBtn.click(); 
-                // The prompt will now stay locked on this card state layout!
             }, 1500);
         } else {
             copyBtnText.textContent = "Failed to copy. Use manual dial.";
