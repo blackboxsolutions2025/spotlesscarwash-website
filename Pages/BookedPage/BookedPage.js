@@ -60,8 +60,23 @@ function populateBookingDashboard(data) {
     document.getElementById("bookingId").textContent = `#${String(data.BookingID).padStart(6, '0')}`;
     document.getElementById("createdAt").textContent = formattedCreatedAt;
     document.getElementById("customerName").textContent = fullCustomerName;
-    document.getElementById("plateNumber").textContent = data.PlateNumber.toUpperCase();
     document.getElementById("mobileNumber").textContent = data.MobileNumber;
+
+    // Updated Vehicle Sub-layer Elements
+    document.getElementById("plateNumber").textContent =
+        data.PlateNumber ? data.PlateNumber.toUpperCase() : "------";
+
+    document.getElementById("vehicleType").textContent =
+        data.VehicleType || "------";
+
+    document.getElementById("brand").textContent =
+        data.Brand || "------";
+
+    document.getElementById("model").textContent =
+        data.Model || "------";
+
+    document.getElementById("color").textContent =
+        data.Color || "------";
 
     // Dynamic Interface Crossfade Switching
     document.getElementById("loadingState").classList.add("hidden");

@@ -35,7 +35,7 @@ body {
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
-    padding-top: 110px; /* Consistent structural buffer for shared header */
+    padding-top: 60px; /* Consistent structural buffer for shared header */
 }
 
 /* Background Atmosphere Layers imported directly from login framework configuration */
@@ -370,7 +370,7 @@ body {
 /* Mobile Screen Breakpoint Balancing updates */
 @media (max-width: 600px) {
     body {
-        padding-top: 100px;
+        padding-top: 60px;
     }
     .profile-wrapper {
         padding: 16px;

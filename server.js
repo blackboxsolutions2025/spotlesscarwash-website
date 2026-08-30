@@ -23,6 +23,7 @@ app.use('/Pages', express.static(path.join(__dirname, 'Pages')));
 app.use(express.static(path.join(__dirname, 'Pages')));
 app.use(express.static(path.join(__dirname, 'Pages', 'LoginPage')));
 app.use(express.static(path.join(__dirname, 'Pages', 'AdminPage')));
+app.use(express.static(path.join(__dirname, 'Pages', 'AddCustomerPage')));
 
 // 3. Keep your root route serving the login page properly when visiting http://localhost:3000/
 app.get('/', (req, res) => {
@@ -262,8 +263,9 @@ app.patch('/api/admin/bookings/:bookingId/status', verifyAdminToken, (req, res) 
     
     // Extracted safely from the authenticated JWT object by the middleware
     const authenticatedAdminUsername = req.adminUsername; 
+    const authenticatedAdminId = req.adminId; // Extracted from decoded token
 
-    // --- ADDED: CRITICAL ADMINISTRATIVE USER EXISTENCE SAFEGUARD ---
+    // 1. ADMINISTRATIVE USER EXISTENCE SAFEGUARD
     const adminVerifySql = 'SELECT AdminID FROM WebAdminUsers WHERE Username = ? LIMIT 1';
     
     db.query(adminVerifySql, [authenticatedAdminUsername], (adminVerifyErr, adminRecords) => {
@@ -272,20 +274,19 @@ app.patch('/api/admin/bookings/:bookingId/status', verifyAdminToken, (req, res) 
             return res.status(500).json({ error: 'System transactional fault lookup verification.' });
         }
 
-        // If the username parsed from the token does not match any row in your administrative register
         if (!adminRecords || adminRecords.length === 0) {
             console.warn(`[Security Alert] Blocked state modification! Authorized token exists for user "${authenticatedAdminUsername}", but account was missing from WebAdminUsers database.`);
             return res.status(403).json({ error: 'Access Denied: Your administrator account could not be found or has been revoked.' });
         }
 
-        // --- CONTINUE EXISTING STATUS RULES IF ACCOUNT IS VALID ---
+        // 2. ENFORCE VALID STATUS TYPE
         const allowedStatuses = ['Pending', 'Confirmed', 'Completed', 'Cancelled'];
         if (!allowedStatuses.includes(nextStatus)) {
             return res.status(400).json({ error: 'Requested workflow target configuration parameter invalid.' });
         }
 
-        // Look up current allocation properties safely
-        const lookupSql = 'SELECT Status FROM WebBookings WHERE BookingID = ? LIMIT 1';
+        // 3. FETCH CURRENT BOOKING ALLOCATION PROPERTIES AND CUSTOMER MAPPING
+        const lookupSql = 'SELECT Status, UserID FROM WebBookings WHERE BookingID = ? LIMIT 1';
         db.query(lookupSql, [bookingId], (err, records) => {
             if (err) {
                 console.error("Booking identification error:", err);
@@ -297,6 +298,7 @@ app.patch('/api/admin/bookings/:bookingId/status', verifyAdminToken, (req, res) 
             }
 
             const currentStatus = records[0].Status;
+            const targetCustomerUserId = records[0].UserID; // Extracted customer mapping key
 
             // Enforce status state transition workflow rules
             if (currentStatus === 'Completed' || currentStatus === 'Cancelled') {
@@ -307,14 +309,73 @@ app.patch('/api/admin/bookings/:bookingId/status', verifyAdminToken, (req, res) 
                 return res.status(400).json({ error: 'Nonsensical reverse modifications are disallowed (Confirmed -> Pending).' });
             }
 
-            // Complete database update
-            const updateSql = 'UPDATE WebBookings SET Status = ? WHERE BookingID = ?';
-            db.query(updateSql, [nextStatus, bookingId], (updateErr, result) => {
-                if (updateErr) {
-                    console.error("Admin booking state transaction error:", updateErr);
-                    return res.status(500).json({ error: 'Internal system database write action fault.' });
+            // 4. INITIATE TRANSACTION PIPELINE TO SAFEGUARD ALL ENTRIES
+            db.beginTransaction((transactionErr) => {
+                if (transactionErr) {
+                    console.error("Transaction initialization crash:", transactionErr);
+                    return res.status(500).json({ error: 'Failed to initialize writing pipeline chain.' });
                 }
-                res.json({ success: true, message: `Reservation status altered to '${nextStatus}' successfully.` });
+
+                // STEP A: Complete main booking update with explicit local PHT timezone conversion override
+                const updateSql = `
+                    UPDATE WebBookings 
+                    SET Status = ?, 
+                        UpdatedAt = CONVERT_TZ(NOW(), '+00:00', '+08:00') 
+                    WHERE BookingID = ?
+                `;
+                db.query(updateSql, [nextStatus, bookingId], (updateErr, result) => {
+                    if (updateErr) {
+                        return db.rollback(() => {
+                            console.error("Admin booking state transaction error:", updateErr);
+                            res.status(500).json({ error: 'Internal system database write action fault.' });
+                        });
+                    }
+
+                    // STEP B: Append Action Log dynamically if setting a final status ('Completed' or 'Cancelled')
+                    if (nextStatus === 'Completed' || nextStatus === 'Cancelled') {
+                        
+                        // Map log properties based on the administrative selection
+                        const actionType = nextStatus === 'Completed' ? 'Complete Booking' : 'Cancel Booking';
+                        const actionDescription = nextStatus === 'Completed' ? 'Booking Completed' : 'Booking Cancelled';
+
+                        const insertActionLogQuery = `
+                            INSERT INTO WebAdminActions (AdminID, ActionType, BookingID, CustomerUserID, ActionDescription, CreatedAt)
+                            VALUES (?, ?, ?, ?, ?, CONVERT_TZ(NOW(), '+00:00', '+08:00'))
+                        `;
+
+                        db.query(insertActionLogQuery, [authenticatedAdminId, actionType, bookingId, targetCustomerUserId, actionDescription], (actionLogErr, actionLogResult) => {
+                            if (actionLogErr) {
+                                return db.rollback(() => {
+                                    console.error(`WebAdminActions tracking log entry write failure for '${nextStatus}':`, actionLogErr);
+                                    res.status(500).json({ error: 'Status updated, but systemic action logging pipeline dropped.' });
+                                });
+                            }
+
+                            // Finalize database writes safely since both steps executed cleanly
+                            db.commit((commitErr) => {
+                                if (commitErr) {
+                                    return db.rollback(() => {
+                                        console.error("Transaction commit failure:", commitErr);
+                                        res.status(500).json({ error: 'Database pipeline confirmation error.' });
+                                    });
+                                }
+                                console.log(`[Admin Actions] Admin ID ${authenticatedAdminId} applied state [${nextStatus}] to Booking ID ${bookingId} for Customer UserID ${targetCustomerUserId}. Action ID: ${actionLogResult.insertId}.`);
+                                return res.json({ success: true, message: "Reservation status updated and administrative log record generated successfully." });
+                            });
+                        });
+                    } else {
+                        // Standard mid-workflow update confirmation logic (e.g., Pending -> Confirmed)
+                        db.commit((commitErr) => {
+                            if (commitErr) {
+                                return db.rollback(() => {
+                                    console.error("Transaction commit failure:", commitErr);
+                                    res.status(500).json({ error: 'Database pipeline confirmation error.' });
+                                });
+                            }
+                            return res.json({ success: true, message: `Reservation status altered to '${nextStatus}' successfully.` });
+                        });
+                    }
+                });
             });
         });
     });
@@ -328,8 +389,10 @@ app.get('/api/profile', (req, res) => {
     const { userID } = req.query;
     if (!userID) return res.status(401).json({ error: 'User authorization credentials invalid or expired.' });
 
+    // EXTENDED QUERY TO TARGET REQUISITE COLUMNS NATIVELY
     const profileQuery = `
-        SELECT FirstName, MiddleName, LastName, MobileNumber, Username, PlateNumber, CreatedAt, UpdatedAt
+        SELECT FirstName, MiddleName, LastName, MobileNumber, Username, 
+               PlateNumber, VehicleType, Brand, Model, Color, CreatedAt, UpdatedAt
         FROM WebCustomers WHERE UserID = ? LIMIT 1
     `;
     db.query(profileQuery, [userID], (err, results) => {
@@ -483,14 +546,149 @@ app.get('/api/bookings/my-booking', (req, res) => {
 
     const sqlQuery = `
         SELECT b.BookingID, b.BookingDate, b.BookingTime, b.Status, b.CreatedAt AS BookingCreatedAt,
-               c.FirstName, c.MiddleName, c.LastName, c.PlateNumber, c.MobileNumber
+            c.FirstName, c.MiddleName, c.LastName, c.PlateNumber, c.MobileNumber,
+            c.VehicleType, c.Brand, c.Model, c.Color
         FROM WebBookings b INNER JOIN WebCustomers c ON b.UserID = c.UserID
         WHERE b.UserID = ? ORDER BY b.BookingDate DESC, b.BookingTime DESC LIMIT 1
     `;
+    
     db.query(sqlQuery, [userID], (err, rows) => {
         if (err) return res.status(500).json({ error: 'Database system processing failure' });
         if (rows.length === 0) return res.status(200).json({ noBooking: true, message: 'No current reservations found.' });
         res.json(rows[0]);
+    });
+});
+
+// ==========================================
+// ADMINISTRATIVE CUSTOMER PROVISIONING API
+// ==========================================
+app.post('/api/admin/customers', verifyAdminToken, async (req, res) => {
+    const { firstName, middleName, lastName, mobileNumber, plateNumber, vehicleType, brand, model, color, username, password } = req.body;
+
+    // 1. Server-side validation check including altered column keys
+    if (!firstName || !lastName || !mobileNumber || !plateNumber || !vehicleType || !brand || !model || !color || !username || !password) {
+        return res.status(400).json({ success: false, error: 'Transactional parameters invalid: Missing required entries.' });
+    }
+
+    const cleanUsername = username.trim();
+    const cleanPlateNumber = plateNumber.trim();
+
+    // 2. Collision Validation (Username and Plate Numbers checks across WebCustomers and WebAdminUsers)
+    const collisionCheckQuery = `
+        SELECT 'username_customer' AS collision_type FROM WebCustomers WHERE Username = ?
+        UNION ALL
+        SELECT 'username_admin' AS collision_type FROM WebAdminUsers WHERE Username = ?
+        UNION ALL
+        SELECT 'plate_customer' AS collision_type FROM WebCustomers WHERE PlateNumber = ?
+        LIMIT 1
+    `;
+
+    db.query(collisionCheckQuery, [cleanUsername, cleanUsername, cleanPlateNumber], async (collisionErr, results) => {
+        if (collisionErr) {
+            console.error('[Admin Provisioning API] Verification query failure:', collisionErr);
+            return res.status(500).json({ success: false, error: 'Internal validation operational error encountered.' });
+        }
+
+        if (results.length > 0) {
+            const conflict = results[0].collision_type;
+            if (conflict === 'plate_customer') {
+                return res.status(409).json({ success: false, error: 'Plate number is already registered.' });
+            } else {
+                return res.status(409).json({ success: false, error: 'Username is already in use.' });
+            }
+        }
+
+        // 3. Cryptographic Security & Transaction Execution
+        try {
+            const saltRounds = 10;
+            const secureHashedPassword = await bcrypt.hash(password, saltRounds);
+
+            // Establish full database transaction to tie the customer entry and administrative audit log safely together
+            db.beginTransaction((transactionErr) => {
+                if (transactionErr) {
+                    console.error('[Admin Provisioning API] Transaction start failure:', transactionErr);
+                    return res.status(500).json({ success: false, error: 'Failed to initialize data writing chain.' });
+                }
+
+                // STEP A: Explicitly inject local PHT via CONVERT_TZ instead of fallback system defaults
+                const insertCustomerQuery = `
+                    INSERT INTO WebCustomers (
+                        FirstName, MiddleName, LastName, MobileNumber, Username, 
+                        Password, PlateNumber, VehicleType, Brand, Model, Color, 
+                        CreatedAt, UpdatedAt
+                    ) VALUES (
+                        ?, ?, ?, ?, ?, 
+                        ?, ?, ?, ?, ?, ?, 
+                        CONVERT_TZ(NOW(), '+00:00', '+08:00'), 
+                        CONVERT_TZ(NOW(), '+00:00', '+08:00')
+                    )
+                `;
+
+                db.query(
+                    insertCustomerQuery, 
+                    [
+                        firstName.trim(), 
+                        middleName ? middleName.trim() : null, 
+                        lastName.trim(), 
+                        mobileNumber.trim(), 
+                        cleanUsername, 
+                        secureHashedPassword, 
+                        cleanPlateNumber,
+                        vehicleType, 
+                        brand.trim(), 
+                        model.trim(), 
+                        color.trim()
+                    ],
+                    (customerErr, customerResult) => {
+                        if (customerErr) {
+                            return db.rollback(() => {
+                                console.error('[Admin Provisioning API] Customer row write failure:', customerErr);
+                                res.status(500).json({ success: false, error: 'Data persistence operation crashed during customer creation.' });
+                            });
+                        }
+
+                        // Retrieve the auto-incremented primary key assigned to this new user record
+                        const dynamicCustomerUserID = customerResult.insertId;
+
+                        // STEP B: Append Action Log with explicit PHT timestamp conversion block
+                        const insertActionLogQuery = `
+                            INSERT INTO WebAdminActions (AdminID, ActionType, BookingID, CustomerUserID, ActionDescription, CreatedAt)
+                            VALUES (?, 'Add Customer', NULL, ?, 'Added Customer', CONVERT_TZ(NOW(), '+00:00', '+08:00'))
+                        `;
+
+                        db.query(
+                            insertActionLogQuery,
+                            [req.adminId, dynamicCustomerUserID],
+                            (actionLogErr, actionLogResult) => {
+                                if (actionLogErr) {
+                                    return db.rollback(() => {
+                                        console.error('[Admin Provisioning API] WebAdminActions tracking write failure:', actionLogErr);
+                                        res.status(500).json({ success: false, error: 'Customer created, but transaction aborted because the audit log entry failed.' });
+                                    });
+                                }
+
+                                // Finalize the database writes safely since both queries executed smoothly
+                                db.commit((commitErr) => {
+                                    if (commitErr) {
+                                        return db.rollback(() => {
+                                            console.error('[Admin Provisioning API] Transaction commit failure:', commitErr);
+                                            res.status(500).json({ success: false, error: 'Database pipeline confirmation error.' });
+                                        });
+                                    }
+
+                                    console.log(`[Admin Provisioning API] Admin (ID: ${req.adminId}) successfully registered Customer ID: ${dynamicCustomerUserID} and logged action ID: ${actionLogResult.insertId}.`);
+                                    return res.status(201).json({ success: true, message: 'Customer added and audit trail logged successfully with correct local timestamps.' });
+                                });
+                            }
+                        );
+                    }
+                );
+            });
+
+        } catch (cryptographyError) {
+            console.error('[Admin Provisioning API] Password hashing execution failed:', cryptographyError);
+            return res.status(500).json({ success: false, error: 'Security transaction routine processing fault.' });
+        }
     });
 });
 

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotless Carwash - Add Customer</title>
+    <link rel="stylesheet" href="/Pages/Shared/header.css">
+    <link rel="stylesheet" href="./AddCustomerPage.css">
+</head>
+<body>
+
+    <!-- Background Atmosphere Layer -->
+    <div class="bg-container">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="water-drops"></div>
+    </div>
+
+    <!-- Layout Wrapper -->
+    <div class="add-customer-wrapper">
+        <div class="add-customer-card">
+            
+            <!-- Card Header -->
+            <div class="card-header">
+                <h1>ADD CUSTOMER</h1>
+                <p>Register a new carwash customer profile</p>
+            </div>
+
+            <!-- Dynamic System Notification Banner -->
+            <div id="alertBanner" class="alert-container hidden">
+                <svg class="alert-icon" xmlns="http://w3.org" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span id="alertMessage">An error occurred</span>
+            </div>
+
+            <!-- Form Architecture -->
+            <form id="addCustomerForm">
+                
+                <!-- Section 1: Customer Information -->
+                <div class="section-divider">Customer Information</div>
+                
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <div class="input-container">
+                        <input type="text" id="firstName" placeholder="John" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="middleName">Middle Name</label>
+                    <div class="input-container">
+                        <input type="text" id="middleName" placeholder="Optional">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <div class="input-container">
+                        <input type="text" id="lastName" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobileNumber">Mobile Number *</label>
+                    <div class="input-container">
+                        <input type="tel" id="mobileNumber" placeholder="09XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <!-- Section 2: Vehicle Information -->
+                <div class="section-divider">Vehicle Information</div>
+
+                <div class="form-group">
+                    <label for="plateNumber">Plate Number *</label>
+                    <div class="input-container">
+                        <input type="text" id="plateNumber" placeholder="ABC 1234" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleType">Vehicle Type *</label>
+                    <div class="input-container">
+                        <select id="vehicleType" required>
+                            <option value="" disabled selected>Select vehicle classification</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Pickup">Pickup</option>
+                            <option value="Van">Van</option>
+                            <option value="Truck">Truck</option>
+                            <option value="Sports Car">Sports Car</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="brand">Brand *</label>
+                    <div class="input-container">
+                        <input type="text" id="brand" placeholder="Toyota, Honda, Mitsubishi..." required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="model">Model *</label>
+                    <div class="input-container">
+                        <input type="text" id="model" placeholder="Vios, Civic, Montero..." required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="color">Color *</label>
+                    <div class="input-container">
+                        <input type="text" id="color" placeholder="Metallic Black, Pearl White..." required>
+                    </div>
+                </div>
+
+                <!-- Interaction Buttons -->
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn" class="btn-primary">
+                        <span id="btnText">Add Customer</span>
+                        <div id="btnSpinner" class="spinner hidden"></div>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="/Pages/Shared/header.js"></script>
+    <script src="./AddCustomerPage.js"></script>
+</body>
+</html>

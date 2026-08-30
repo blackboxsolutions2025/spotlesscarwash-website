@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="drawer-header">Admin Navigation</div>
             <ul class="drawer-links">
                 <li><a href="/Pages/AdminPage/AdminPage.html" class="drawer-item" id="navLinkAdmin">Reservation Management</a></li>
+                <li><a href="/Pages/AddCustomerPage/AddCustomerPage.html" class="drawer-item" id="navLinkAddCustomer">Add Customer</a></li>
                 <li class="divider-line"></li>
                 <li><button id="drawerLogoutBtn" class="drawer-logout-btn">Log Out Securely</button></li>
             </ul>
@@ -72,6 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("navLinkProfile")?.classList.add("active");
     } else if (currentPath.includes("AdminPage")) {
         document.getElementById("navLinkAdmin")?.classList.add("active");
+    } else if (currentPath.includes("AddCustomerPage")) {
+        document.getElementById("navLinkAddCustomer")?.classList.add("active");
     }
     
     // Toggle menu state handler callbacks

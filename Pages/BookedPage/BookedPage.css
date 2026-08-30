@@ -118,7 +118,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 12px;
 }
 
 .detail-item {
@@ -168,8 +168,14 @@
 @media (max-width: 480px) {
     /* UPDATED: Mobile safe scaling wrapper space padding adjustments */
     .login-wrapper {
-        padding-top: calc(75px + env(safe-area-inset-top));
-        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+        min-height: 100vh;
+        display: flex;
+        justify-content: center; /* Ensures horizontal centering */
+        align-items: center;     /* Ensures vertical centering */
+        
+        /* Uses environment safe-area-insets purely for even bounding padding */
+        padding-top: calc(34px + env(safe-area-inset-top));
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
         padding-left: 16px;
         padding-right: 16px;
     }

@@ -48,8 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('middleName').value = data.MiddleName || '';
             document.getElementById('lastName').value = data.LastName || '';
             document.getElementById('mobileNumber').value = data.MobileNumber || '';
-            document.getElementById('plateNumber').value = data.PlateNumber || '';
             
+            // NEW SEPARATED VEHICLE PROPERTIES ASSIGNMENT STRATEGY
+            document.getElementById('plateNumber').value = data.PlateNumber || '';
+            document.getElementById('vehicleType').value = data.VehicleType || '';
+            document.getElementById('brand').value = data.Brand || '';
+            document.getElementById('model').value = data.Model || '';
+            document.getElementById('color').value = data.Color || '';
+
             // Assign Editable Tracking States without modifying active focus elements
             if (btnEditUsername.textContent === 'Edit') {
                 txtUsername.value = data.Username || '';

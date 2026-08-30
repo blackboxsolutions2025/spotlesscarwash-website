@@ -497,10 +497,10 @@ h2 {
 /* Mobile Responsive Optimization Layouts */
 @media (max-width: 480px) {
     body {
-        padding: 60px 12px 20px 12px;
+        padding: 80px 24px 20px 12px;
     }
     .booking-container {
-        padding: 32px 20px;
+        padding: 20px 20px 20px 20px;
     }
     .time-grid {
         grid-template-columns: repeat(2, 1fr);
